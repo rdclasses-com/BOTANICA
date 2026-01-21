@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botanica | Professional Botanical Curators</title>
+    
+    <!-- FAVICON ADDED HERE -->
+    <link rel="icon" href="https://i.ibb.co/5htwdZJ6/Gemini-Generated-Image-k1h34ak1h34ak1h3-1.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --emerald-pro: #064e3b;
+            --stone-pro: #78716c;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #fcfcfb;
+            color: #1a1a1a;
+        }
+
+        .serif { font-family: 'Cormorant Garamond', serif; }
+
+        .glass-nav {
+            background: rgba(252, 252, 251, 0.8);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+        }
+
+        .product-card {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .img-zoom {
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-card:hover .img-zoom {
+            transform: scale(1.1);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #064e3b; border-radius: 10px; }
+
+        #modal-content, #basket-content, #checkout-content, #login-modal, #dashboard-modal, #admin-modal {
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes textUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .animate-text { animation: textUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        /* Checkout & Dashboard Styles */
+        .step-indicator.active { background-color: #064e3b; color: white; border-color: #064e3b; }
+        .step-indicator.completed { background-color: #064e3b; color: white; border-color: #064e3b; }
+        .step-line.active { background-color: #064e3b; }
+        
+        .checkout-input {
+            width: 100%;
+            background: transparent;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 0;
+            outline: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #064e3b;
+            transition: border-color 0.3s;
+        }
+        .checkout-input:focus { border-color: #064e3b; }
+        .checkout-input::placeholder { color: #d6d3d1; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+        .coupon-card {
+            border: 1px dashed #064e3b;
+            background-color: #f0fdf4;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .coupon-card:hover { background-color: #dcfce7; }
+
+        /* Dashboard specific */
+        .dash-tab.active { background-color: #064e3b; color: white; }
+        .admin-tab.active { background-color: #064e3b; color: white; }
+    </style>
+</head>
+<body class="selection:bg-emerald-100 selection:text-emerald-900">
+
+    <!-- Preloader -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-white flex items-center justify-center transition-opacity duration-1000">
+        <div class="flex flex-col items-center">
+            <div class="h-20 w-[1px] bg-emerald-900 animate-pulse"></div>
+            <span class="mt-4 text-[10px] font-bold tracking-[0.5em] uppercase text-emerald-900">Botanica</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-stone-200/40 h-24 flex items-center">
+        <div class="max-w-[1400px] mx-auto px-8 w-full flex justify-between items-center">
+            <div class="flex items-center gap-10">
+                <div class="flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl font-black tracking-[-0.05em] text-emerald-950">BOTANICA<span class="text-emerald-500">.</span></span>
+                </div>
+                
+                <div class="hidden lg:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.25em] text-stone-500">
+                    <a href="#home" class="hover:text-emerald-950 transition-colors">Home</a>
+                    <a href="#shop" class="hover:text-emerald-950 transition-colors">Curations</a>
+                    <a href="#about" class="hover:text-emerald-950 transition-colors">Legacy</a>
+                    <a href="#contact" class="hover:text-emerald-950 transition-colors">Concierge</a>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="relative group hidden sm:flex items-center">
+                    <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search specimens..." class="bg-stone-100/50 border-none outline-none py-2 px-4 rounded-full text-[11px] font-bold w-0 group-hover:w-48 focus:w-48 transition-all duration-500 tracking-widest placeholder:text-stone-300">
+                    <button class="text-stone-400 hover:text-emerald-950 transition ml-2"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+                <div class="h-6 w-[1px] bg-stone-200"></div>
+                
+                <!-- USER ICON -->
+                <button class="relative group" onclick="handleUserAuth()">
+                    <span id="user-label" class="text-[11px] font-bold uppercase tracking-widest mr-2 group-hover:text-emerald-600 transition hidden lg:inline">Sign In</span>
+                    <i class="fa-regular fa-user text-emerald-950"></i>
+                </button>
+
+                <button class="relative group" onclick="openBasket()">
+                    <span class="text-[11px] font-bold uppercase tracking-widest mr-2 group-hover:text-emerald-600 transition">Basket</span>
+                    <i class="fa-solid fa-bag-shopping text-emerald-950"></i>
+                    <span id="cart-count" class="absolute -top-3 -right-2 bg-emerald-600 text-white text-[9px] h-4 w-4 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center pt-24 overflow-hidden bg-[#f3f3f1]">
+        <div class="max-w-[1400px] mx-auto px-8 w-full grid lg:grid-cols-12 gap-12 items-center relative z-10">
+            <div class="lg:col-span-7">
+                <div class="mb-8">
+                    <span class="text-emerald-600 text-[10px] font-black tracking-[0.6em] uppercase block mb-4">The Winter Edit '26</span>
+                    <h1 class="text-7xl md:text-9xl font-black text-emerald-950 leading-[0.85] tracking-tighter italic serif">
+                        Live <br> <span class="not-italic">Better.</span>
+                    </h1>
+                </div>
+                <p class="text-xl text-stone-500 font-normal max-w-lg leading-relaxed mb-12">
+                    Premium indoor specimens selected by master botanists to bridge the gap between architectural structure and organic soul.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-8 items-start sm:items-center">
+                    <a href="#shop" class="group relative px-12 py-6 bg-emerald-950 text-white rounded-full overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/20">
+                        <span class="relative z-10 text-[11px] font-bold uppercase tracking-[0.2em]">Explore Collection</span>
+                        <div class="absolute inset-0 bg-emerald-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                    </a>
+                    <div class="flex items-center gap-4 cursor-pointer group">
+                        <div class="w-12 h-12 rounded-full border border-stone-300 flex items-center justify-center group-hover:bg-emerald-950 group-hover:border-emerald-950 transition-all duration-500">
+                            <i class="fa-solid fa-play text-[10px] group-hover:text-white"></i>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-stone-500">The Process</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-5 relative">
+                <div class="relative rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] group">
+                    <img src="https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&q=80&w=1200" class="w-full aspect-[4/5] object-cover img-zoom" alt="Main Hero">
+                    <div class="absolute inset-0 bg-emerald-950/10 group-hover:bg-transparent transition-colors duration-700"></div>
+                </div>
+                <div class="absolute -bottom-10 -left-10 bg-white p-8 rounded-3xl shadow-xl max-w-[240px] hidden md:block">
+                    <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-2">Featured Specimen</p>
+                    <h4 class="text-lg font-bold text-emerald-950 mb-1">Fiddle Leaf Fig</h4>
+                    <p class="text-xs text-stone-400 font-medium">Extra Large • Grade A++</p>
+                </div>
+            </div>
+        </div>
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none hidden xl:block">
+            <h2 class="text-[300px] font-black rotate-90 origin-center leading-none tracking-tighter">EST.26</h2>
+        </div>
+    </section>
+
+    <!-- Curations (Shop) -->
+    <section id="shop" class="py-40 bg-white">
+        <div class="max-w-[1400px] mx-auto px-8">
+            <div class="flex flex-col md:flex-row justify-between items-baseline mb-24 gap-12">
+                <div class="max-w-xl">
+                    <h2 class="text-5xl font-black text-emerald-950 tracking-tighter mb-6">THE CURATIONS</h2>
+                    <p class="text-stone-500 font-medium leading-relaxed">Each specimen is acclimatized in our warehouse for 14 days before dispatch to ensure zero-stress delivery.</p>
+                </div>
+                <div class="flex gap-1 border-b border-stone-100 pb-2 overflow-x-auto w-full md:w-auto">
+                    <button onclick="filterProducts('Everything')" class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-950 border-b-2 border-emerald-950 cat-btn">Everything</button>
+                    <button onclick="filterProducts('Tropical')" class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-stone-400 hover:text-emerald-950 transition cat-btn">Tropical</button>
+                    <button onclick="filterProducts('Structural')" class="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-stone-400 hover:text-emerald-950 transition cat-btn">Structural</button>
+                </div>
+            </div>
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24 min-h-[400px]"></div>
+        </div>
+    </section>
+
+    <!-- Legacy Section -->
+    <section id="about" class="py-40 bg-stone-100 overflow-hidden">
+        <div class="max-w-[1400px] mx-auto px-8 grid lg:grid-cols-2 gap-24 items-center">
+            <div class="order-2 lg:order-1">
+                <div class="relative rounded-[3rem] overflow-hidden">
+                    <img src="https://i.ibb.co/GvDwXcVg/Gemini-Generated-Image-ecqe0zecqe0zecqe.png" class="w-full h-[600px] object-cover" alt="Our Heritage">
+                </div>
+            </div>
+            <div class="order-1 lg:order-2 space-y-10">
+                <span class="text-emerald-600 text-[10px] font-black tracking-[0.6em] uppercase block">Our Legacy</span>
+                <h2 class="text-6xl font-black text-emerald-950 tracking-tighter italic serif leading-[0.9]">CRAFTED BY <br> GENERATIONS.</h2>
+                <p class="text-lg text-stone-500 font-medium leading-relaxed">Botanica began as a small family greenhouse in 1982. Today, we continue that legacy of care by merging traditional horticultural wisdom with modern interior design principles.</p>
+                <div class="grid grid-cols-2 gap-12 pt-10">
+                    <div>
+                        <h4 class="text-4xl font-black text-emerald-950 mb-2">40+</h4>
+                        <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Years of Expertise</p>
+                    </div>
+                    <div>
+                        <h4 class="text-4xl font-black text-emerald-950 mb-2">100k</h4>
+                        <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Homes Transformed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PERSONAL SUCCESS STORY PAGE -->
+    <section id="success-stories" class="py-40 bg-white border-y border-stone-100">
+        <div class="max-w-[1400px] mx-auto px-8">
+            <div class="text-center mb-24 max-w-2xl mx-auto">
+                <span class="text-emerald-600 text-[10px] font-black tracking-[0.6em] uppercase block mb-4">Stories of Growth</span>
+                <h2 class="text-5xl font-black text-emerald-950 tracking-tighter italic serif mb-6">PERSONAL SUCCESS STORIES</h2>
+                <p class="text-stone-500 font-medium leading-relaxed">Discover how Botanica transforms spaces and lives, one leaf at a time. Real stories from our community.</p>
+            </div>
+
+            <!-- Story Card -->
+            <div class="bg-[#f9f9f8] rounded-[3rem] overflow-hidden">
+                <div class="grid lg:grid-cols-2">
+                    <div class="p-12 lg:p-24 flex flex-col justify-center space-y-8">
+                        <div class="flex items-center gap-4 text-emerald-600">
+                            <i class="fa-solid fa-quote-left text-4xl opacity-20"></i>
+                            <span class="text-[10px] font-black uppercase tracking-[0.3em]">The Verma Residence</span>
+                        </div>
+                        <h3 class="text-4xl font-bold text-emerald-950 leading-tight">"We didn't just buy plants; we bought a new way of living."</h3>
+                        <p class="text-stone-500 leading-relaxed">
+                            "Living in a high-rise in Mumbai, we felt disconnected from nature. The Botanica team didn't just send us pots; they analyzed our lighting, our humidity, and our lifestyle. They curated a 'Tropical Sanctuary' package that transformed our sterile living room into a breathing ecosystem."
+                        </p>
+                        <div class="pt-8 border-t border-stone-200">
+                            <div class="flex items-center gap-4">
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" class="w-12 h-12 rounded-full object-cover grayscale">
+                                <div>
+                                    <p class="text-sm font-bold text-emerald-950">Aditi Verma</p>
+                                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Architect, Mumbai</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 pt-4">
+                            <div class="bg-white px-4 py-2 rounded-lg shadow-sm">
+                                <span class="block text-xl font-black text-emerald-950">14</span>
+                                <span class="text-[9px] font-bold text-stone-400 uppercase tracking-widest">Specimens</span>
+                            </div>
+                            <div class="bg-white px-4 py-2 rounded-lg shadow-sm">
+                                <span class="block text-xl font-black text-emerald-950">100%</span>
+                                <span class="text-[9px] font-bold text-stone-400 uppercase tracking-widest">Survival Rate</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-[400px] lg:h-auto">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200" class="absolute inset-0 w-full h-full object-cover" alt="Success Story Interior">
+                        <div class="absolute bottom-10 right-10 bg-white/90 backdrop-blur-md px-6 py-3 rounded-full">
+                            <span class="text-[9px] font-black text-emerald-950 uppercase tracking-widest">After Transformation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concierge (Contact/Message) -->
+    <section id="contact" class="py-40 bg-[#062c22] text-white overflow-hidden relative">
+        <div class="max-w-[1400px] mx-auto px-8 relative z-10 grid lg:grid-cols-2 gap-32">
+            <div>
+                <span class="text-emerald-400 text-[10px] font-black tracking-[0.6em] uppercase block mb-6">Contact Concierge</span>
+                <h2 class="text-6xl font-black tracking-tighter leading-[0.9] mb-12 italic serif">CONNECT WITH <br> OUR EXPERTS.</h2>
+                <p class="text-emerald-100/40 text-lg max-w-md mb-12 font-medium">Have a specific vision for your space? Our master gardeners are ready to provide tailored recommendations.</p>
+                <div class="flex gap-6 items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-900/50 flex items-center justify-center text-emerald-400"><i class="fa-solid fa-envelope text-xl"></i></div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-1">Direct Line</p>
+                        <p class="text-xl font-bold tracking-tight">hello@botanica.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-md p-12 lg:p-20 rounded-[3rem] border border-white/10">
+                <form action="https://formspree.io/f/xkooqdjz" method="POST" class="space-y-10">
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="space-y-2 border-b border-white/20 pb-4">
+                            <label class="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-500">Name</label>
+                            <input type="text" name="name" required class="w-full bg-transparent outline-none text-xl font-medium placeholder:text-white/20" placeholder="Full Name">
+                        </div>
+                        <div class="space-y-2 border-b border-white/20 pb-4">
+                            <label class="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-500">Email</label>
+                            <input type="email" name="email" required class="w-full bg-transparent outline-none text-xl font-medium placeholder:text-white/20" placeholder="your@email.com">
+                        </div>
+                    </div>
+                    <div class="space-y-2 border-b border-white/20 pb-4">
+                        <label class="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-500">Your Vision</label>
+                        <textarea name="message" required rows="3" class="w-full bg-transparent outline-none text-xl font-medium placeholder:text-white/20" placeholder="Tell us about your space..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-white text-emerald-950 py-8 rounded-full font-black text-xs uppercase tracking-[0.3em] hover:bg-emerald-400 transition-all duration-500">Send Inquiry</button>
+                </form>
+            </div>
+        </div>
+        <i class="fa-solid fa-leaf absolute -bottom-20 -right-20 text-[400px] text-emerald-900 opacity-20 rotate-12"></i>
+    </section>
+
+    <!-- Product Detail Modal (MODERN FULL SIZE) -->
+    <div id="product-modal" class="fixed inset-0 z-[100] hidden">
+        <div id="modal-overlay" class="absolute inset-0 bg-emerald-950/30 backdrop-blur-sm opacity-0 transition-opacity duration-700" onclick="closeModal()"></div>
+        <!-- Full Screen Content -->
+        <div id="modal-content" class="absolute right-0 top-0 h-full w-full bg-white shadow-2xl translate-x-full overflow-y-auto"></div>
+    </div>
+
+    <!-- Basket Sidebar -->
+    <div id="basket-modal" class="fixed inset-0 z-[100] hidden">
+        <div id="basket-overlay" class="absolute inset-0 bg-emerald-950/30 backdrop-blur-sm opacity-0 transition-opacity duration-700" onclick="closeBasket()"></div>
+        <div id="basket-content" class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl translate-x-full flex flex-col">
+            <div class="p-8 border-b border-stone-100 flex justify-between items-center">
+                <h2 class="text-xl font-black text-emerald-950 tracking-tighter uppercase">Your Basket</h2>
+                <button onclick="closeBasket()" class="text-stone-400 hover:text-emerald-950 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="basket-items" class="flex-grow overflow-y-auto p-8 space-y-8">
+                <!-- Items injected here -->
+            </div>
+            <div class="p-8 border-t border-stone-100 space-y-6">
+                <div class="flex justify-between items-center font-black text-emerald-950 uppercase tracking-widest text-xs">
+                    <span>Subtotal</span>
+                    <span id="basket-subtotal">₹0</span>
+                </div>
+                <button onclick="openCheckout()" class="w-full py-6 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.4em] hover:bg-emerald-600 transition-all">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" class="fixed inset-0 z-[120] hidden">
+        <div id="login-overlay" class="absolute inset-0 bg-emerald-950/80 backdrop-blur-md opacity-0 transition-opacity duration-700" onclick="closeLogin()"></div>
+        <div id="login-content" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl p-12 shadow-2xl opacity-0 scale-90 transition-all duration-500">
+            <h2 class="text-4xl font-black text-emerald-950 italic serif mb-6">Welcome Back.</h2>
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-6">
+                <input type="email" id="login-email" class="checkout-input" placeholder="Email Address" required>
+                <input type="password" id="login-pass" class="checkout-input" placeholder="Password" required>
+                <button type="submit" class="w-full py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-emerald-700 transition">Sign In</button>
+            </form>
+            <button onclick="closeLogin()" class="mt-6 text-stone-400 text-xs font-bold uppercase tracking-widest w-full text-center">Cancel</button>
+        </div>
+    </div>
+
+    <!-- USER DASHBOARD (FULL SIZE) -->
+    <div id="dashboard-modal" class="fixed inset-0 z-[120] hidden">
+        <div id="dash-overlay" class="absolute inset-0 bg-emerald-950/80 backdrop-blur-md opacity-0 transition-opacity duration-700" onclick="closeDashboard()"></div>
+        <!-- FULL WIDTH MODAL -->
+        <div id="dash-content" class="absolute right-0 top-0 h-full w-full bg-white shadow-2xl translate-x-full overflow-hidden flex flex-col md:flex-row">
+            <!-- Sidebar -->
+            <div class="w-full md:w-80 bg-stone-50 p-12 flex flex-col justify-between border-r border-stone-100">
+                <div>
+                    <h2 class="text-2xl font-black text-emerald-950 tracking-tighter uppercase mb-12">Dashboard</h2>
+                    <div class="space-y-4">
+                        <button onclick="switchDashTab('profile')" class="dash-tab active w-full text-left px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition">Profile</button>
+                        <button onclick="switchDashTab('orders')" class="dash-tab w-full text-left px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition text-stone-400 hover:bg-white">Orders</button>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="text-red-500 font-bold text-xs uppercase tracking-widest text-left px-6">Log Out</button>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-grow p-8 md:p-24 overflow-y-auto bg-white">
+                <button onclick="closeDashboard()" class="absolute top-8 right-8 text-stone-400 hover:text-emerald-950 z-50"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                
+                <!-- Profile Tab -->
+                <div id="tab-profile" class="space-y-12 max-w-2xl">
+                    <h3 class="text-4xl font-black text-emerald-950 italic serif">Personal Details</h3>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-emerald-600 block mb-3">Full Name</label>
+                            <input type="text" id="prof-name" class="checkout-input" onchange="updateProfile()" placeholder="Enter your name">
+                        </div>
+                        <div>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-emerald-600 block mb-3">Phone</label>
+                            <input type="text" id="prof-phone" class="checkout-input" onchange="updateProfile()" placeholder="Enter your phone">
+                        </div>
+                        <div>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-emerald-600 block mb-3">Address</label>
+                            <textarea id="prof-address" rows="3" class="checkout-input" onchange="updateProfile()" placeholder="Enter your full address"></textarea>
+                        </div>
+                        <p class="text-[10px] text-stone-400 italic">* Changes save automatically and will appear during checkout.</p>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="tab-orders" class="hidden space-y-12">
+                    <h3 class="text-4xl font-black text-emerald-950 italic serif">Order History</h3>
+                    <div id="orders-list" class="space-y-8 max-w-3xl">
+                        <!-- Orders Injected JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="admin-modal" class="fixed inset-0 z-[130] hidden">
+        <div class="absolute inset-0 bg-stone-900/95 backdrop-blur-md"></div>
+        <div class="absolute inset-0 flex flex-col md:flex-row">
+            <!-- Sidebar -->
+            <div class="w-full md:w-72 bg-emerald-950 p-10 flex flex-col justify-between text-white border-r border-emerald-900">
+                <div>
+                    <h2 class="text-xl font-black tracking-[0.2em] uppercase mb-16 text-emerald-400">Admin Panel</h2>
+                    <div class="space-y-2">
+                        <button onclick="switchAdminTab('admin-orders')" class="admin-tab active w-full text-left px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition bg-emerald-900 text-white">All Orders</button>
+                        <button onclick="switchAdminTab('admin-products')" class="admin-tab w-full text-left px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition text-emerald-400 hover:bg-emerald-900">Products</button>
+                        <button onclick="switchAdminTab('admin-settings')" class="admin-tab w-full text-left px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-widest transition text-emerald-400 hover:bg-emerald-900">Settings</button>
+                    </div>
+                </div>
+                <button onclick="closeAdminPanel()" class="text-emerald-400 font-bold text-xs uppercase tracking-widest text-left px-6 hover:text-white">Exit Panel</button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-grow p-12 overflow-y-auto bg-stone-50">
+                
+                <!-- Admin Orders -->
+                <div id="tab-admin-orders" class="space-y-10">
+                    <h3 class="text-3xl font-black text-emerald-950 italic serif">Global Order Management</h3>
+                    <div id="admin-orders-list" class="space-y-6"></div>
+                </div>
+
+                <!-- Admin Products -->
+                <div id="tab-admin-products" class="hidden space-y-10">
+                    <h3 class="text-3xl font-black text-emerald-950 italic serif">Add New Specimen</h3>
+                    <div class="bg-white p-8 rounded-3xl shadow-sm max-w-2xl border border-stone-200">
+                        <form onsubmit="handleAddProduct(event)" class="space-y-6">
+                            <input type="text" id="prod-name" class="checkout-input" placeholder="Plant Name" required>
+                            <input type="number" id="prod-price" class="checkout-input" placeholder="Price (INR)" required>
+                            <input type="url" id="prod-image" class="checkout-input" placeholder="Image URL (Unsplash/Imgur)" required>
+                            <select id="prod-cat" class="checkout-input text-stone-500">
+                                <option value="Tropical">Tropical</option>
+                                <option value="Structural">Structural</option>
+                                <option value="Flowering">Flowering</option>
+                            </select>
+                            <textarea id="prod-desc" class="checkout-input" placeholder="Description" rows="3" required></textarea>
+                            <button type="submit" class="w-full py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-700 transition">Upload Product</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Settings -->
+                <div id="tab-admin-settings" class="hidden space-y-10">
+                    <h3 class="text-3xl font-black text-emerald-950 italic serif">Configuration</h3>
+                    <div class="bg-white p-8 rounded-3xl shadow-sm max-w-xl border border-stone-200 space-y-8">
+                        <div>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-emerald-600 block mb-4">Admin Security</label>
+                            <input type="text" id="admin-new-pass" class="checkout-input" placeholder="New Password">
+                            <button onclick="changeAdminPassword()" class="mt-4 px-6 py-3 bg-stone-200 text-stone-500 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-stone-300">Update Password</button>
+                        </div>
+                        <div class="pt-8 border-t border-stone-100 flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-950 uppercase tracking-widest">Enable Public Reviews</span>
+                            <button onclick="toggleReviews()" id="review-toggle-btn" class="w-12 h-6 bg-stone-200 rounded-full relative transition-colors duration-300">
+                                <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-300"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 z-[110] hidden">
+        <div id="checkout-overlay" class="absolute inset-0 bg-emerald-950/80 backdrop-blur-md opacity-0 transition-opacity duration-700"></div>
+        
+        <div id="checkout-content" class="absolute inset-0 flex flex-col lg:flex-row translate-y-full transition-transform duration-700 bg-[#fcfcfb]">
+            
+            <!-- Left: Order Summary (Will Hide on Success) -->
+            <div id="checkout-left-panel" class="lg:w-1/3 bg-[#f3f3f1] p-8 lg:p-12 overflow-y-auto border-r border-stone-200 order-2 lg:order-1 hidden lg:block transition-all duration-500">
+                <div class="sticky top-0">
+                    <button onclick="closeCheckout()" class="mb-8 flex items-center gap-2 text-stone-400 hover:text-emerald-950 transition text-[10px] font-black uppercase tracking-widest">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Shop
+                    </button>
+                    <h3 class="text-2xl font-black text-emerald-950 tracking-tight italic serif mb-8">Order Summary</h3>
+                    
+                    <div id="checkout-summary-items" class="space-y-6 mb-8">
+                        <!-- Items injected via JS -->
+                    </div>
+
+                    <!-- COUPON SECTION -->
+                    <div class="bg-white p-6 rounded-2xl mb-8 border border-stone-200">
+                        <label class="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-600 block mb-2">Have a Coupon?</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="coupon-input" placeholder="Enter Code" class="flex-grow bg-stone-50 border-none outline-none px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-emerald-950">
+                            <button onclick="applyCoupon()" class="bg-emerald-950 text-white px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-700 transition">Apply</button>
+                        </div>
+                        <p id="coupon-msg" class="text-[10px] font-bold mt-2 hidden"></p>
+                    </div>
+
+                    <div class="border-t border-stone-200 pt-6 space-y-3">
+                        <div class="flex justify-between text-xs font-bold text-stone-500 uppercase tracking-widest">
+                            <span>Subtotal</span>
+                            <span id="checkout-subtotal">₹0</span>
+                        </div>
+                        <div class="flex justify-between text-xs font-bold text-emerald-600 uppercase tracking-widest">
+                            <span>Discount</span>
+                            <span id="checkout-discount">-₹0</span>
+                        </div>
+                        <div class="flex justify-between text-xs font-bold text-stone-500 uppercase tracking-widest">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-black text-emerald-950 pt-4">
+                            <span>Total</span>
+                            <span id="checkout-total">₹0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Roadmap Form -->
+            <div id="checkout-right-panel" class="lg:w-2/3 flex flex-col h-full relative order-1 lg:order-2 w-full transition-all duration-500">
+                <!-- Mobile Header -->
+                <div class="lg:hidden p-6 border-b border-stone-100 flex justify-between items-center bg-white">
+                    <span class="font-black text-emerald-950 uppercase tracking-widest text-xs">Checkout</span>
+                    <button onclick="closeCheckout()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="flex-grow flex flex-col items-center justify-center p-6 lg:p-20 overflow-y-auto">
+                    <div class="max-w-xl w-full">
+                        
+                        <!-- Progress Roadmap -->
+                        <div id="checkout-roadmap" class="flex justify-between items-center mb-16 relative">
+                            <div class="absolute top-1/2 left-0 w-full h-[1px] bg-stone-200 -z-10"></div>
+                            <div id="line-1" class="absolute top-1/2 left-0 w-0 h-[1px] bg-emerald-950 -z-10 transition-all duration-500 step-line"></div>
+                            
+                            <!-- Steps -->
+                            <div class="flex flex-col items-center gap-2">
+                                <div id="ind-1" class="w-8 h-8 rounded-full border border-stone-300 bg-white flex items-center justify-center text-xs font-bold text-stone-400 transition-all duration-300 step-indicator active">1</div>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-stone-400">Contact</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div id="ind-2" class="w-8 h-8 rounded-full border border-stone-300 bg-white flex items-center justify-center text-xs font-bold text-stone-400 transition-all duration-300 step-indicator">2</div>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-stone-400">Address</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div id="ind-3" class="w-8 h-8 rounded-full border border-stone-300 bg-white flex items-center justify-center text-xs font-bold text-stone-400 transition-all duration-300 step-indicator">3</div>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-stone-400">Details</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2">
+                                <div id="ind-4" class="w-8 h-8 rounded-full border border-stone-300 bg-white flex items-center justify-center text-xs font-bold text-stone-400 transition-all duration-300 step-indicator">4</div>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-stone-400">Payment</span>
+                            </div>
+                        </div>
+
+                        <!-- Step Forms -->
+                        <form id="checkout-form" onsubmit="event.preventDefault()">
+                            
+                            <!-- Step 1: Contact -->
+                            <div id="step-1" class="step-content space-y-8 animate-text">
+                                <h2 class="text-4xl font-black text-emerald-950 italic serif">Who are we sending this to?</h2>
+                                <div class="space-y-6">
+                                    <div>
+                                        <input type="text" id="c-name" class="checkout-input" placeholder="Full Name" required>
+                                    </div>
+                                    <div>
+                                        <input type="tel" id="c-phone" class="checkout-input" placeholder="Mobile Number" required>
+                                    </div>
+                                </div>
+                                <div class="pt-8">
+                                    <button onclick="nextStep(2)" class="px-10 py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-emerald-700 transition w-full sm:w-auto">Next Step</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Address -->
+                            <div id="step-2" class="step-content space-y-8 hidden">
+                                <h2 class="text-4xl font-black text-emerald-950 italic serif">Where is it going?</h2>
+                                <div class="space-y-6">
+                                    <div>
+                                        <input type="text" id="c-pin" class="checkout-input" placeholder="Pincode" required>
+                                    </div>
+                                    <div>
+                                        <input type="text" id="c-address" class="checkout-input" placeholder="Flat / House No / Building" required>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <input type="text" id="c-city" class="checkout-input" placeholder="City" required>
+                                        <input type="text" id="c-state" class="checkout-input" placeholder="State" required>
+                                    </div>
+                                </div>
+                                <div class="pt-8 flex gap-4">
+                                    <button onclick="prevStep(1)" class="px-8 py-4 border border-stone-200 text-stone-500 rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-stone-50 transition">Back</button>
+                                    <button onclick="nextStep(3)" class="px-10 py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-emerald-700 transition flex-grow sm:flex-grow-0">Next Step</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: House Details -->
+                            <div id="step-3" class="step-content space-y-8 hidden">
+                                <h2 class="text-4xl font-black text-emerald-950 italic serif">Help us find you.</h2>
+                                <div class="space-y-6">
+                                    <div>
+                                        <input type="text" id="c-landmark" class="checkout-input" placeholder="Nearby Landmark">
+                                    </div>
+                                    <div>
+                                        <input type="text" id="c-floor" class="checkout-input" placeholder="Floor Number / Lift Access">
+                                    </div>
+                                </div>
+                                <div class="pt-8 flex gap-4">
+                                    <button onclick="prevStep(2)" class="px-8 py-4 border border-stone-200 text-stone-500 rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-stone-50 transition">Back</button>
+                                    <button onclick="nextStep(4)" class="px-10 py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-emerald-700 transition flex-grow sm:flex-grow-0">To Payment</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Payment -->
+                            <div id="step-4" class="step-content space-y-8 hidden">
+                                <h2 class="text-4xl font-black text-emerald-950 italic serif">Secure Payment.</h2>
+                                <div class="space-y-4">
+                                    <label class="flex items-center justify-between p-6 border border-stone-200 rounded-2xl cursor-pointer hover:border-emerald-600 transition group">
+                                        <div class="flex items-center gap-4">
+                                            <input type="radio" name="payment" value="upi" checked class="accent-emerald-900 w-5 h-5">
+                                            <span class="font-bold text-emerald-950">UPI / GPay / PhonePe</span>
+                                        </div>
+                                        <i class="fa-solid fa-mobile-screen text-stone-300 group-hover:text-emerald-600"></i>
+                                    </label>
+                                    <label class="flex items-center justify-between p-6 border border-stone-200 rounded-2xl cursor-pointer hover:border-emerald-600 transition group">
+                                        <div class="flex items-center gap-4">
+                                            <input type="radio" name="payment" value="card" class="accent-emerald-900 w-5 h-5">
+                                            <span class="font-bold text-emerald-950">Credit / Debit Card</span>
+                                        </div>
+                                        <i class="fa-regular fa-credit-card text-stone-300 group-hover:text-emerald-600"></i>
+                                    </label>
+                                    <label class="flex items-center justify-between p-6 border border-stone-200 rounded-2xl cursor-pointer hover:border-emerald-600 transition group">
+                                        <div class="flex items-center gap-4">
+                                            <input type="radio" name="payment" value="cod" class="accent-emerald-900 w-5 h-5">
+                                            <span class="font-bold text-emerald-950">Cash on Delivery</span>
+                                        </div>
+                                        <i class="fa-solid fa-money-bill-wave text-stone-300 group-hover:text-emerald-600"></i>
+                                    </label>
+                                </div>
+                                <div class="pt-8 flex gap-4">
+                                    <button onclick="prevStep(3)" class="px-8 py-4 border border-stone-200 text-stone-500 rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-stone-50 transition">Back</button>
+                                    <button onclick="finishOrder()" class="px-10 py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-emerald-700 transition flex-grow sm:flex-grow-0">Complete Order</button>
+                                </div>
+                            </div>
+
+                            <!-- Success Message -->
+                            <div id="step-success" class="step-content text-center hidden flex flex-col items-center justify-center h-full">
+                                <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-900 mb-8 animate-bounce">
+                                    <i class="fa-solid fa-check text-4xl"></i>
+                                </div>
+                                <h2 class="text-5xl font-black text-emerald-950 italic serif mb-4">Thank You.</h2>
+                                <p class="text-stone-500 font-medium max-w-md mx-auto mb-10">Your order has been confirmed. You can track it in your dashboard.</p>
+                                <div class="flex flex-col gap-4">
+                                    <button onclick="closeCheckout(); handleUserAuth(); switchDashTab('orders')" class="px-12 py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-emerald-700 transition">Track Order</button>
+                                    <button onclick="closeCheckout()" class="px-12 py-4 border border-emerald-950 text-emerald-950 rounded-full font-black text-[10px] uppercase tracking-[0.3em] hover:bg-emerald-50 transition">Continue Shopping</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white pt-32 pb-16 border-t border-stone-100">
+        <div class="max-w-[1400px] mx-auto px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-20 pb-24 text-center md:text-left">
+                <div class="md:col-span-2 space-y-10">
+                    <h2 class="text-3xl font-black tracking-tight text-emerald-950 italic serif">Refined nature for <br> conscious living.</h2>
+                    <div class="flex justify-center md:justify-start gap-8 text-stone-400 text-lg">
+                        <a href="#" class="hover:text-emerald-600 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-emerald-600 transition"><i class="fa-brands fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-[10px] font-black uppercase tracking-widest text-emerald-950 mb-8">Navigation</h5>
+                    <ul class="space-y-4 text-xs font-bold text-stone-400 uppercase tracking-widest">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#shop">Collection</a></li>
+                        <li><a href="#about">Legacy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-[10px] font-black uppercase tracking-widest text-emerald-950 mb-8">Contact</h5>
+                    <ul class="space-y-4 text-xs font-bold text-stone-400 uppercase tracking-widest">
+                        <li>Studio Bengaluru</li>
+                        <li>+91 990 000 0000</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-12 border-t border-stone-100 flex flex-col md:flex-row justify-between items-center gap-6 text-[9px] font-bold tracking-[0.4em] text-stone-300">
+                <p>© 2026 BOTANICA CURATIONS.</p>
+                <p>CRAFTED IN BENGALURU, INDIA</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Init Product List (Check LocalStorage first, else default)
+        let PLANTS = JSON.parse(localStorage.getItem('botanica_products')) || [
+            { id: 1, name: "Monstera Deliciosa", price: 3499, category: "Tropical", image: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=1200", rating: 4.8, description: "A definitive architectural statement with iconic leaf patterns.", water: "Moderate", light: "Indirect", origin: "Mexico", care: "Wipe leaves with a damp cloth monthly." },
+            { id: 2, name: "Laurentii Sansevieria", price: 1850, category: "Structural", image: "https://images.unsplash.com/photo-1593482892290-f54927ae1abc?auto=format&fit=crop&q=80&w=1200", rating: 4.9, description: "The gold standard of resilience and natural air purification.", water: "Low", light: "Partial", origin: "Africa", care: "Allow soil to dry completely." },
+            { id: 3, name: "Spathiphyllum Wallisii", price: 1599, category: "Flowering", image: "https://images.unsplash.com/photo-1593691509543-c55fb32e7355?auto=format&fit=crop&q=80&w=1200", rating: 4.7, description: "Elegant white flowers standing in contrast to deep emerald foliage.", water: "Frequent", light: "Low", origin: "Colombia", care: "Mist daily for humidity." },
+            { id: 4, name: "Ficus Lyrata Standard", price: 8900, category: "Architectural", image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200", rating: 4.6, description: "A mature designer tree with massive violin-shaped leaves.", water: "Strict", light: "Bright", origin: "Africa", care: "Sensitive to movement once placed." },
+            { id: 5, name: "Epipremnum Aureum", price: 1200, category: "Trailing", image: "https://images.unsplash.com/photo-1591123109647-ee5f5c8d4ecb?auto=format&fit=crop&q=80&w=1200", rating: 4.9, description: "A fast-growing cascading vine perfect for shelving.", water: "Regular", light: "Any", origin: "Solomon Islands", care: "Train to climb or trail." },
+            { id: 6, name: "Ficus Elastica", price: 2600, category: "Structural", image: "https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?auto=format&fit=crop&q=80&w=1200", rating: 4.5, description: "Deep burgundy leaves providing a moody aesthetic.", water: "Low", light: "Medium", origin: "SE Asia", care: "Keep out of reach of pets." }
+        ];
+
+        let cart = [];
+        let currentStep = 1;
+        let appliedDiscount = 0;
+        
+        // Mock User Data & Global Orders
+        let user = JSON.parse(localStorage.getItem('botanica_user')) || null;
+        // Centralized orders source
+        let allOrders = JSON.parse(localStorage.getItem('botanica_orders')) || [];
+        
+        // Admin Config
+        if (!localStorage.getItem('botanica_admin_pass')) {
+            localStorage.setItem('botanica_admin_pass', 'BOTANICA021');
+        }
+        let reviewsEnabled = localStorage.getItem('botanica_reviews_enabled') === 'true';
+
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('opacity-0');
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 1000);
+            }, 500);
+            renderProducts(PLANTS);
+            updateAuthUI();
+            updateReviewToggleUI();
+
+            // Check for shared product link
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product');
+            if (productId) {
+                openModal(parseInt(productId));
+            }
+        };
+
+        function renderProducts(items) {
+            const grid = document.getElementById('product-grid');
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center"><p class="text-stone-400 font-bold uppercase tracking-widest text-xs">No specimens found for your criteria.</p></div>`;
+                return;
+            }
+            grid.innerHTML = items.map(plant => `
+                <div class="product-card group cursor-pointer" onclick="openModal(${plant.id})">
+                    <div class="relative aspect-[3/4] overflow-hidden rounded-[2.5rem] bg-[#f9f9f8] mb-8 shadow-sm">
+                        <img src="${plant.image}" class="img-zoom w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-emerald-950/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-center justify-center">
+                            <span class="text-[10px] font-black text-white tracking-[0.4em] uppercase border border-white px-8 py-3 rounded-full backdrop-blur-sm">Details</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-start px-2">
+                        <div>
+                            <span class="text-[9px] font-black text-emerald-600 uppercase tracking-[0.3em]">${plant.category}</span>
+                            <h3 class="text-2xl font-bold text-emerald-950 tracking-tighter italic serif">${plant.name}</h3>
+                        </div>
+                        <span class="text-lg font-black text-emerald-950">₹${plant.price.toLocaleString()}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search Functionality (Modified for Admin)
+        function handleSearch() {
+            const query = document.getElementById('search-input').value;
+            const adminPass = localStorage.getItem('botanica_admin_pass');
+            
+            if(query === adminPass) {
+                openAdminPanel();
+                document.getElementById('search-input').value = "";
+                return;
+            }
+
+            const filtered = PLANTS.filter(p => p.name.toLowerCase().includes(query.toLowerCase()) || p.category.toLowerCase().includes(query.toLowerCase()));
+            renderProducts(filtered);
+        }
+
+        // Category Filter
+        function filterProducts(cat) {
+            const btns = document.querySelectorAll('.cat-btn');
+            btns.forEach(b => b.classList.remove('border-b-2', 'border-emerald-950', 'text-emerald-950'));
+            event.target.classList.add('border-b-2', 'border-emerald-950', 'text-emerald-950');
+            
+            if (cat === 'Everything') renderProducts(PLANTS);
+            else renderProducts(PLANTS.filter(p => p.category === cat));
+        }
+
+        // Modal Functions
+        function openModal(id) {
+            const plant = PLANTS.find(p => p.id === id);
+            
+            // Get related products (simple logic: exclude current, take next 3)
+            const related = PLANTS.filter(p => p.id !== id).slice(0, 3);
+            const relatedHTML = related.map(rp => `
+                <div class="group cursor-pointer" onclick="openModal(${rp.id})">
+                    <div class="aspect-[3/4] rounded-2xl overflow-hidden bg-stone-100 mb-4">
+                        <img src="${rp.image}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <h5 class="font-bold text-emerald-950">${rp.name}</h5>
+                    <p class="text-xs text-stone-400 uppercase tracking-widest">₹${rp.price.toLocaleString()}</p>
+                </div>
+            `).join('');
+
+            const modal = document.getElementById('product-modal');
+            const content = document.getElementById('modal-content');
+            const overlay = document.getElementById('modal-overlay');
+
+            // Generate Link
+            const shareLink = `${window.location.origin}${window.location.pathname}?product=${id}`;
+
+            // Reviews HTML (Conditional)
+            let reviewsSection = '';
+            if(reviewsEnabled) {
+                reviewsSection = `
+                    <div class="mb-12 border-t border-stone-100 pt-12">
+                        <h4 class="text-2xl font-black text-emerald-950 tracking-tighter italic serif mb-6">Customer Reviews</h4>
+                        <div class="bg-stone-50 p-6 rounded-2xl">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="flex text-emerald-600 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                                <span class="text-xs font-bold text-stone-400">Verified Buyer</span>
+                            </div>
+                            <p class="text-sm font-medium text-emerald-950 italic">"Absolutely stunning specimen. Arrived in perfect condition."</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            content.innerHTML = `
+                <div class="h-full overflow-y-auto bg-white custom-scrollbar">
+                    <button onclick="closeModal()" class="fixed top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-md shadow-lg flex items-center justify-center text-emerald-950 hover:bg-emerald-950 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    
+                    <div class="lg:grid lg:grid-cols-12 min-h-screen">
+                        
+                        <!-- Left: Image Section (Improved Background & Size) -->
+                        <div class="lg:col-span-5 relative flex items-center justify-center p-8 lg:p-16 lg:sticky lg:top-0 lg:h-screen overflow-hidden">
+                            <!-- Background Decor -->
+                            <div class="absolute inset-0 bg-[#f0f0ef]"></div>
+                            <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-stone-200/40"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/80 via-transparent to-transparent opacity-60"></div>
+
+                            <!-- Image Container -->
+                            <div class="relative w-full max-w-[500px] aspect-[3/4] shadow-[0_40px_80px_-20px_rgba(6,78,59,0.15)] rounded-[3rem] overflow-hidden transform transition duration-1000 hover:scale-[1.02] ring-1 ring-white/50">
+                                <img src="${plant.image}" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+
+                        <!-- Right: Details Section -->
+                        <div class="lg:col-span-7 p-8 lg:p-24 flex flex-col justify-center bg-white">
+                            <div class="max-w-2xl mx-auto w-full">
+                                <!-- Header -->
+                                <div class="flex items-center gap-4 mb-6">
+                                    <span class="px-4 py-1.5 rounded-full border border-emerald-950/10 bg-emerald-50 text-[10px] font-bold uppercase tracking-widest text-emerald-950">${plant.category}</span>
+                                    <div class="flex gap-1 text-emerald-600 text-xs items-center">
+                                        <i class="fa-solid fa-star"></i>
+                                        <span class="font-bold ml-1 text-emerald-950">${plant.rating}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Title & Price -->
+                                <h2 class="text-6xl md:text-7xl font-black text-emerald-950 tracking-tighter italic serif mb-4 leading-[0.9]">${plant.name}</h2>
+                                <div class="text-3xl font-light text-stone-400 mb-10">₹${plant.price.toLocaleString()}</div>
+
+                                <!-- Description -->
+                                <p class="text-lg text-stone-600 font-medium leading-relaxed mb-12 border-l-2 border-emerald-950/20 pl-6">${plant.description}</p>
+
+                                <!-- Modern Specs Grid -->
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                                     <div class="bg-stone-50 p-4 rounded-2xl text-center">
+                                        <i class="fa-solid fa-droplet text-emerald-600 text-xl mb-2"></i>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-stone-400">Water</p>
+                                        <p class="text-xs font-bold text-emerald-950 mt-1">${plant.water}</p>
+                                     </div>
+                                     <div class="bg-stone-50 p-4 rounded-2xl text-center">
+                                        <i class="fa-solid fa-sun text-emerald-600 text-xl mb-2"></i>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-stone-400">Light</p>
+                                        <p class="text-xs font-bold text-emerald-950 mt-1">${plant.light}</p>
+                                     </div>
+                                     <div class="bg-stone-50 p-4 rounded-2xl text-center">
+                                        <i class="fa-solid fa-earth-americas text-emerald-600 text-xl mb-2"></i>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-stone-400">Origin</p>
+                                        <p class="text-xs font-bold text-emerald-950 mt-1">${plant.origin}</p>
+                                     </div>
+                                     <div class="bg-stone-50 p-4 rounded-2xl text-center">
+                                        <i class="fa-solid fa-hand-holding-heart text-emerald-600 text-xl mb-2"></i>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-stone-400">Care</p>
+                                        <p class="text-xs font-bold text-emerald-950 mt-1">Easy</p>
+                                     </div>
+                                </div>
+
+                                <!-- Offers (Modern Ticket Style) -->
+                                <div class="mb-12">
+                                    <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">Available Offers</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div onclick="copyCode('BOTANICA10')" class="border-dashed border-2 border-emerald-950/20 bg-emerald-50/50 p-4 rounded-xl flex justify-between items-center cursor-pointer hover:bg-emerald-50 transition group">
+                                            <div>
+                                                <span class="text-sm font-black text-emerald-950 block group-hover:text-emerald-700">10% OFF</span>
+                                                <span class="text-[9px] text-stone-500 font-bold uppercase tracking-wide">Orders > ₹500</span>
+                                            </div>
+                                            <i class="fa-solid fa-copy text-stone-300 group-hover:text-emerald-600"></i>
+                                        </div>
+                                        <div onclick="copyCode('BOTANICA50')" class="border-dashed border-2 border-emerald-950/20 bg-emerald-50/50 p-4 rounded-xl flex justify-between items-center cursor-pointer hover:bg-emerald-50 transition group">
+                                            <div>
+                                                <span class="text-sm font-black text-emerald-950 block group-hover:text-emerald-700">50% OFF</span>
+                                                <span class="text-[9px] text-stone-500 font-bold uppercase tracking-wide">₹1k - ₹4k Range</span>
+                                            </div>
+                                            <i class="fa-solid fa-copy text-stone-300 group-hover:text-emerald-600"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Bar -->
+                                <div class="flex flex-col md:flex-row gap-4 mb-16 border-t border-stone-100 pt-8">
+                                     <button onclick="copyLink('${shareLink}')" class="px-8 py-4 border border-emerald-950 text-emerald-950 rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-50 transition">
+                                        <i class="fa-solid fa-share-nodes mr-2"></i> Share
+                                     </button>
+                                     <button onclick="addToCart(${plant.id})" class="flex-grow py-4 bg-emerald-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-700 transition shadow-xl shadow-emerald-900/20">
+                                        Add to Basket — ₹${plant.price.toLocaleString()}
+                                     </button>
+                                </div>
+
+                                ${reviewsSection}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Products -->
+                    <div class="bg-[#fcfcfb] py-24 px-8 border-t border-stone-100">
+                        <div class="max-w-[1400px] mx-auto">
+                            <h3 class="text-4xl font-black text-emerald-950 tracking-tighter italic serif mb-12">Curated for You</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                ${relatedHTML}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            setTimeout(() => { overlay.classList.add('opacity-100'); content.classList.remove('translate-x-full'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code);
+            alert("Coupon " + code + " copied to clipboard!");
+        }
+        
+        function copyLink(link) {
+            navigator.clipboard.writeText(link);
+            alert("Product link copied!");
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('opacity-100');
+            document.getElementById('modal-content').classList.add('translate-x-full');
+            setTimeout(() => { document.getElementById('product-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; }, 600);
+            
+            // Clear URL param without reload
+            window.history.pushState({}, document.title, window.location.pathname);
+        }
+
+        // Auth & Dashboard
+        function handleUserAuth() {
+            if (user) {
+                openDashboard();
+            } else {
+                document.getElementById('login-modal').classList.remove('hidden');
+                setTimeout(() => {
+                     document.getElementById('login-overlay').classList.add('opacity-100');
+                     document.getElementById('login-content').classList.remove('opacity-0', 'scale-90');
+                }, 10);
+            }
+        }
+
+        function closeLogin() {
+             document.getElementById('login-overlay').classList.remove('opacity-100');
+             document.getElementById('login-content').classList.add('opacity-0', 'scale-90');
+             setTimeout(() => document.getElementById('login-modal').classList.add('hidden'), 500);
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            // Mock Login
+            user = { email: email, name: '', phone: '', address: '' };
+            localStorage.setItem('botanica_user', JSON.stringify(user));
+            closeLogin();
+            updateAuthUI();
+            setTimeout(openDashboard, 600);
+        }
+
+        function updateAuthUI() {
+            const label = document.getElementById('user-label');
+            if (user) label.innerText = "Dashboard";
+            else label.innerText = "Sign In";
+        }
+
+        function handleLogout() {
+            user = null;
+            localStorage.removeItem('botanica_user');
+            closeDashboard();
+            updateAuthUI();
+        }
+
+        function openDashboard() {
+            // Update orders from storage first
+            allOrders = JSON.parse(localStorage.getItem('botanica_orders')) || [];
+            
+            // Populate Fields (Prefill Logic)
+            if(user) {
+                document.getElementById('prof-name').value = user.name || '';
+                document.getElementById('prof-phone').value = user.phone || '';
+                document.getElementById('prof-address').value = user.address || '';
+            }
+            
+            // Filter Orders for specific user
+            // LOGIC FOR 12 HOURS DELETE: Check if Delivered & time > 12h
+            const now = new Date().getTime();
+            const twelveHours = 12 * 60 * 60 * 1000;
+
+            const myOrders = (user && user.email) ? allOrders.filter(o => o.userEmail === user.email) : allOrders;
+            
+            // Filter out old delivered orders for display
+            const visibleOrders = myOrders.filter(o => {
+                if(o.status === 'Delivered') {
+                    // Check if timestamp exists (for new orders)
+                    if(o.timestamp) {
+                        return (now - o.timestamp) < twelveHours;
+                    }
+                    return true; // Keep old legacy orders without timestamp for safety
+                }
+                return true;
+            });
+            
+            const container = document.getElementById('orders-list');
+            if (visibleOrders.length === 0) {
+                container.innerHTML = '<p class="text-stone-400 font-bold uppercase tracking-widest text-xs">No active orders.</p>';
+            } else {
+                container.innerHTML = visibleOrders.map(order => renderOrderCard(order)).join('');
+            }
+
+            const modal = document.getElementById('dashboard-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('dash-overlay').classList.add('opacity-100');
+                document.getElementById('dash-content').classList.remove('translate-x-full');
+            }, 10);
+        }
+
+        function renderOrderCard(order) {
+            // Determine progress width dynamically based on text status
+            let progress = 'w-1/3'; // Default Processing
+            let statusText = order.status;
+            
+            if(statusText === 'Shipped') progress = 'w-2/3';
+            else if(statusText === 'Delivered') progress = 'w-full';
+
+            return `
+                <div class="border border-stone-200 rounded-2xl p-6 bg-white shadow-sm transition-all hover:shadow-md">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[9px] font-black text-stone-400 uppercase tracking-widest">Order ID</span>
+                            <h4 class="font-bold text-emerald-950">#${order.id}</h4>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] font-black text-stone-400 uppercase tracking-widest">Est. Delivery</span>
+                            <h4 class="font-bold text-emerald-600">${order.deliveryDate}</h4>
+                        </div>
+                    </div>
+                    <div class="space-y-4 mb-6">
+                        ${order.items.map(item => `
+                            <div class="flex gap-4 items-center">
+                                <img src="${item.image}" class="w-10 h-10 rounded object-cover">
+                                <div>
+                                    <p class="text-xs font-bold text-emerald-950">${item.name}</p>
+                                    <p class="text-[9px] text-stone-400">Qty: ${item.qty}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <!-- Dynamic Progress Bar -->
+                    <div class="bg-stone-100 rounded-full h-2 w-full overflow-hidden relative">
+                         <div class="absolute top-0 left-0 h-full bg-emerald-600 ${progress} transition-all duration-1000"></div>
+                    </div>
+                    <div class="flex justify-between mt-2 text-[9px] font-bold uppercase tracking-widest text-stone-400">
+                        <span class="${statusText === 'Processing' ? 'text-emerald-950' : ''}">Processing</span>
+                        <span class="${statusText === 'Shipped' ? 'text-emerald-950' : ''}">Shipped</span>
+                        <span class="${statusText === 'Delivered' ? 'text-emerald-950' : ''}">Delivered</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeDashboard() {
+             document.getElementById('dash-overlay').classList.remove('opacity-100');
+             document.getElementById('dash-content').classList.add('translate-x-full');
+             setTimeout(() => document.getElementById('dashboard-modal').classList.add('hidden'), 600);
+        }
+
+        function switchDashTab(tab) {
+            // Update Tab Data if switching to orders
+            if(tab === 'orders') openDashboard(); 
+
+            document.querySelectorAll('.dash-tab').forEach(t => {
+                t.classList.remove('active', 'text-white', 'bg-[#064e3b]');
+                t.classList.add('text-stone-400', 'hover:bg-white');
+            });
+            event.target.classList.add('active', 'text-white', 'bg-[#064e3b]');
+            event.target.classList.remove('text-stone-400', 'hover:bg-white');
+
+            document.getElementById('tab-profile').classList.add('hidden');
+            document.getElementById('tab-orders').classList.add('hidden');
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+        }
+
+        function updateProfile() {
+            if(!user) return;
+            user.name = document.getElementById('prof-name').value;
+            user.phone = document.getElementById('prof-phone').value;
+            user.address = document.getElementById('prof-address').value;
+            localStorage.setItem('botanica_user', JSON.stringify(user));
+        }
+
+        /* --- ADMIN PANEL FUNCTIONS --- */
+
+        function openAdminPanel() {
+            // Refresh orders before opening
+            allOrders = JSON.parse(localStorage.getItem('botanica_orders')) || [];
+            
+            const modal = document.getElementById('admin-modal');
+            modal.classList.remove('hidden');
+            renderAdminOrders();
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function switchAdminTab(tab) {
+            document.querySelectorAll('.admin-tab').forEach(t => {
+                t.classList.remove('active', 'bg-emerald-900', 'text-white');
+                t.classList.add('text-emerald-400', 'hover:bg-emerald-900');
+            });
+            event.target.classList.add('active', 'bg-emerald-900', 'text-white');
+            event.target.classList.remove('text-emerald-400');
+
+            document.getElementById('tab-admin-orders').classList.add('hidden');
+            document.getElementById('tab-admin-products').classList.add('hidden');
+            document.getElementById('tab-admin-settings').classList.add('hidden');
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            
+            if(tab === 'admin-orders') renderAdminOrders();
+        }
+
+        function renderAdminOrders() {
+            const container = document.getElementById('admin-orders-list');
+            if (allOrders.length === 0) {
+                container.innerHTML = '<p class="text-stone-400 font-bold uppercase">No orders found.</p>';
+                return;
+            }
+
+            container.innerHTML = allOrders.map(order => `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 transition hover:shadow-lg relative">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold text-emerald-950">Order #${order.id}</h4>
+                        <span class="text-xs font-bold text-stone-400">${order.date}</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-xs font-bold text-stone-500">Items: ${order.items.length}</p>
+                        <p class="text-xs font-bold text-stone-500">Customer: ${order.userName || 'Guest'} (${order.userEmail || 'No Email'})</p>
+                        <p class="text-xs font-bold text-stone-500">Login Detail: ${order.userPhone || 'N/A'}</p>
+                        <p class="text-xs font-bold text-emerald-600 mt-1">Current Status: ${order.status}</p>
+                    </div>
+                    <div class="flex items-center gap-4 bg-stone-50 p-4 rounded-xl">
+                        <label class="text-[9px] font-black uppercase tracking-widest text-emerald-600">Update Status:</label>
+                        <select onchange="updateOrderStatus(${order.id}, this.value)" class="bg-white border border-stone-200 rounded-lg text-xs font-bold text-emerald-950 p-2 outline-none cursor-pointer hover:border-emerald-600 transition">
+                            <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                            <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                        </select>
+                        <button onclick="deleteOrder(${order.id})" class="ml-auto text-red-400 hover:text-red-600 text-xs font-bold uppercase tracking-widest"><i class="fa-solid fa-trash-can mr-1"></i> Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateOrderStatus(id, newStatus) {
+            // Find specific order in memory
+            const orderIndex = allOrders.findIndex(o => o.id === id);
+            
+            if(orderIndex !== -1) {
+                // Update local variable
+                allOrders[orderIndex].status = newStatus;
+                
+                // If switching to Delivered, update timestamp for 12h logic
+                if (newStatus === 'Delivered') {
+                    allOrders[orderIndex].timestamp = new Date().getTime(); 
+                }
+                
+                // Save to LocalStorage (This creates the live link!)
+                localStorage.setItem('botanica_orders', JSON.stringify(allOrders));
+                
+                // Visual feedback for Admin
+                renderAdminOrders(); // Re-render to show updated status text
+                // alert(`Order #${id} marked as ${newStatus}`);
+            }
+        }
+
+        function deleteOrder(id) {
+            if(confirm('Delete this order permanently?')) {
+                allOrders = allOrders.filter(o => o.id !== id);
+                localStorage.setItem('botanica_orders', JSON.stringify(allOrders));
+                renderAdminOrders();
+            }
+        }
+
+        function handleAddProduct(e) {
+            e.preventDefault();
+            const newProduct = {
+                id: Date.now(), // simple unique id
+                name: document.getElementById('prod-name').value,
+                price: parseInt(document.getElementById('prod-price').value),
+                image: document.getElementById('prod-image').value,
+                category: document.getElementById('prod-cat').value,
+                description: document.getElementById('prod-desc').value,
+                rating: 5.0, // Default for new
+                water: 'Moderate', // Default simplified
+                light: 'Medium',
+                origin: 'Nursery',
+                care: 'Standard Care'
+            };
+
+            PLANTS.push(newProduct);
+            localStorage.setItem('botanica_products', JSON.stringify(PLANTS));
+            alert('Product Uploaded Successfully!');
+            e.target.reset();
+            renderProducts(PLANTS); // Refresh main grid
+        }
+
+        function changeAdminPassword() {
+            const newPass = document.getElementById('admin-new-pass').value;
+            if(newPass.length < 4) {
+                alert('Password too short');
+                return;
+            }
+            localStorage.setItem('botanica_admin_pass', newPass);
+            alert('Admin Password Updated.');
+        }
+
+        function toggleReviews() {
+            reviewsEnabled = !reviewsEnabled;
+            localStorage.setItem('botanica_reviews_enabled', reviewsEnabled);
+            updateReviewToggleUI();
+        }
+
+        function updateReviewToggleUI() {
+            const btn = document.getElementById('review-toggle-btn');
+            const dot = btn.firstElementChild;
+            if(reviewsEnabled) {
+                btn.classList.remove('bg-stone-200');
+                btn.classList.add('bg-emerald-600');
+                dot.classList.add('translate-x-6');
+            } else {
+                btn.classList.add('bg-stone-200');
+                btn.classList.remove('bg-emerald-600');
+                dot.classList.remove('translate-x-6');
+            }
+        }
+
+        // Basket Functions
+        function openBasket() {
+            const modal = document.getElementById('basket-modal');
+            const content = document.getElementById('basket-content');
+            const overlay = document.getElementById('basket-overlay');
+            updateBasketUI();
+            modal.classList.remove('hidden');
+            setTimeout(() => { overlay.classList.add('opacity-100'); content.classList.remove('translate-x-full'); }, 10);
+        }
+
+        function closeBasket() {
+            document.getElementById('basket-overlay').classList.remove('opacity-100');
+            document.getElementById('basket-content').classList.add('translate-x-full');
+            setTimeout(() => { document.getElementById('basket-modal').classList.add('hidden'); }, 600);
+        }
+
+        function addToCart(id) {
+            const plant = PLANTS.find(p => p.id === id);
+            const existing = cart.find(i => i.id === id);
+            if (existing) existing.qty++;
+            else cart.push({ ...plant, qty: 1 });
+            
+            updateBasketCount();
+            closeModal();
+            openBasket();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            updateBasketCount();
+            updateBasketUI();
+            // Reset discount if cart changes
+            appliedDiscount = 0;
+            renderCheckoutSummary();
+        }
+
+        function updateQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) removeFromCart(id);
+                else {
+                    updateBasketCount();
+                    updateBasketUI();
+                    // Reset discount if cart changes to ensure validity
+                    appliedDiscount = 0;
+                    renderCheckoutSummary(); 
+                }
+            }
+        }
+
+        function updateBasketCount() {
+            const total = cart.reduce((sum, i) => sum + i.qty, 0);
+            document.getElementById('cart-count').innerText = total;
+        }
+
+        function updateBasketUI() {
+            const container = document.getElementById('basket-items');
+            const subtotalEl = document.getElementById('basket-subtotal');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-stone-300 space-y-4">
+                    <i class="fa-solid fa-leaf text-4xl opacity-20"></i>
+                    <p class="text-[10px] font-black uppercase tracking-widest">Your basket is empty</p>
+                </div>`;
+                subtotalEl.innerText = "₹0";
+                return;
+            }
+
+            container.innerHTML = cart.map(item => `
+                <div class="flex gap-6 group">
+                    <div class="w-24 h-32 rounded-2xl overflow-hidden bg-stone-100">
+                        <img src="${item.image}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-grow space-y-2">
+                        <div class="flex justify-between">
+                            <h4 class="font-bold text-emerald-950 truncate max-w-[140px]">${item.name}</h4>
+                            <button onclick="removeFromCart(${item.id})" class="text-stone-300 hover:text-red-500 transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </div>
+                        <p class="text-xs font-black text-stone-400 tracking-widest uppercase">₹${item.price.toLocaleString()}</p>
+                        <div class="flex items-center gap-4 pt-2">
+                            <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 rounded-full border border-stone-200 flex items-center justify-center text-[10px] hover:bg-emerald-950 hover:text-white transition">-</button>
+                            <span class="text-xs font-black text-emerald-950">${item.qty}</span>
+                            <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 rounded-full border border-stone-200 flex items-center justify-center text-[10px] hover:bg-emerald-950 hover:text-white transition">+</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            subtotalEl.innerText = `₹${subtotal.toLocaleString()}`;
+        }
+
+        /* --- CHECKOUT FUNCTIONS --- */
+
+        function openCheckout() {
+            if (cart.length === 0) return;
+            
+            closeBasket();
+            const modal = document.getElementById('checkout-modal');
+            const content = document.getElementById('checkout-content');
+            const overlay = document.getElementById('checkout-overlay');
+            
+            // SHOW LEFT PANEL (RESET)
+            document.getElementById('checkout-left-panel').classList.remove('hidden');
+            document.getElementById('checkout-left-panel').classList.add('lg:block');
+            document.getElementById('checkout-right-panel').classList.remove('lg:w-full');
+            document.getElementById('checkout-right-panel').classList.add('lg:w-2/3');
+            
+            // Auto-fill from user profile if logged in
+            if (user) {
+                document.getElementById('c-name').value = user.name || '';
+                document.getElementById('c-phone').value = user.phone || '';
+                document.getElementById('c-address').value = user.address || '';
+            }
+
+            currentStep = 1;
+            appliedDiscount = 0; // Reset discount on new checkout
+            updateStepUI();
+            renderCheckoutSummary();
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => { 
+                overlay.classList.add('opacity-100'); 
+                content.classList.remove('translate-y-full'); 
+            }, 10);
+        }
+
+        function closeCheckout() {
+            const modal = document.getElementById('checkout-modal');
+            const content = document.getElementById('checkout-content');
+            const overlay = document.getElementById('checkout-overlay');
+            
+            content.classList.add('translate-y-full');
+            overlay.classList.remove('opacity-100');
+            
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+            }, 700);
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('coupon-input').value.toUpperCase();
+            const msg = document.getElementById('coupon-msg');
+            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            appliedDiscount = 0;
+            msg.classList.remove('hidden', 'text-emerald-600', 'text-red-500');
+
+            if (code === 'BOTANICA10') {
+                if (subtotal > 500) {
+                    appliedDiscount = subtotal * 0.10;
+                    msg.innerText = "Coupon Applied! 10% Off.";
+                    msg.classList.add('text-emerald-600');
+                } else {
+                    msg.innerText = "Order must be above ₹500";
+                    msg.classList.add('text-red-500');
+                }
+            } else if (code === 'BOTANICA50') {
+                if (subtotal >= 1000 && subtotal <= 4000) {
+                    appliedDiscount = subtotal * 0.50;
+                    msg.innerText = "Super Coupon Applied! 50% Off.";
+                    msg.classList.add('text-emerald-600');
+                } else {
+                    msg.innerText = "Order must be between ₹1000 - ₹4000";
+                    msg.classList.add('text-red-500');
+                }
+            } else {
+                msg.innerText = "Invalid Coupon Code";
+                msg.classList.add('text-red-500');
+            }
+            renderCheckoutSummary();
+        }
+
+        function renderCheckoutSummary() {
+            const container = document.getElementById('checkout-summary-items');
+            const totalEl = document.getElementById('checkout-total');
+            const subtotalEl = document.getElementById('checkout-subtotal');
+            const discountEl = document.getElementById('checkout-discount');
+            
+            const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            
+            if (appliedDiscount > 0) {
+                if (appliedDiscount > (subtotal * 0.2)) { 
+                     if (subtotal < 1000 || subtotal > 4000) appliedDiscount = 0;
+                     else appliedDiscount = subtotal * 0.5;
+                }
+                else {
+                    if (subtotal <= 500) appliedDiscount = 0;
+                    else appliedDiscount = subtotal * 0.1;
+                }
+            }
+
+            const total = subtotal - appliedDiscount;
+
+            subtotalEl.innerText = `₹${subtotal.toLocaleString()}`;
+            discountEl.innerText = `-₹${appliedDiscount.toLocaleString()}`;
+            totalEl.innerText = `₹${total.toLocaleString()}`;
+
+            container.innerHTML = cart.map(item => `
+                <div class="flex gap-4 items-center">
+                    <div class="w-16 h-16 rounded-xl overflow-hidden bg-stone-200 flex-shrink-0">
+                        <img src="${item.image}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-grow">
+                        <h5 class="text-sm font-bold text-emerald-950 leading-tight">${item.name}</h5>
+                        <p class="text-[10px] font-bold text-stone-400">Qty: ${item.qty}</p>
+                    </div>
+                    <span class="text-xs font-black text-emerald-950">₹${(item.price * item.qty).toLocaleString()}</span>
+                </div>
+            `).join('');
+        }
+
+        function nextStep(target) {
+            // Validation Logic
+            if(target === 2) {
+                if(!document.getElementById('c-name').value || !document.getElementById('c-phone').value) {
+                    alert('Please fill in your contact details.');
+                    return;
+                }
+                // Save checkout data to user object if logged in
+                if (user) {
+                    user.name = document.getElementById('c-name').value;
+                    user.phone = document.getElementById('c-phone').value;
+                    updateProfile();
+                }
+            }
+            if(target === 3) {
+                if(!document.getElementById('c-pin').value || !document.getElementById('c-address').value || !document.getElementById('c-city').value) {
+                    alert('Please fill in your address.');
+                    return;
+                }
+                if (user) {
+                    user.address = document.getElementById('c-address').value + ", " + document.getElementById('c-city').value;
+                    updateProfile();
+                }
+            }
+
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('animate-text');
+            });
+            
+            // Show target step
+            const targetEl = document.getElementById(`step-${target}`);
+            targetEl.classList.remove('hidden');
+            targetEl.classList.add('animate-text');
+            
+            currentStep = target;
+            updateStepUI();
+        }
+
+        function prevStep(target) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+            const targetEl = document.getElementById(`step-${target}`);
+            targetEl.classList.remove('hidden');
+            targetEl.classList.add('animate-text');
+            
+            currentStep = target;
+            updateStepUI();
+        }
+
+        function updateStepUI() {
+            // Update Indicators
+            for(let i=1; i<=4; i++) {
+                const ind = document.getElementById(`ind-${i}`);
+                if (i === currentStep) {
+                    ind.classList.add('active');
+                    ind.classList.remove('completed');
+                    ind.innerHTML = i;
+                } else if (i < currentStep) {
+                    ind.classList.remove('active');
+                    ind.classList.add('completed');
+                    ind.innerHTML = '<i class="fa-solid fa-check"></i>';
+                } else {
+                    ind.classList.remove('active', 'completed');
+                    ind.innerHTML = i;
+                }
+            }
+
+            // Update Progress Line
+            const line = document.getElementById('line-1');
+            const percentage = ((currentStep - 1) / 3) * 100;
+            line.style.width = `${percentage}%`;
+        }
+
+        function finishOrder() {
+            // 1. Show Success UI
+            document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('step-success').classList.remove('hidden');
+            document.getElementById('step-success').classList.add('animate-text');
+            document.querySelector('.relative.mb-16').classList.add('opacity-0'); // Hide progress bar
+            
+            // HIDE ORDER SUMMARY SIDEBAR
+            document.getElementById('checkout-left-panel').classList.add('hidden');
+            document.getElementById('checkout-left-panel').classList.remove('lg:block');
+            document.getElementById('checkout-right-panel').classList.remove('lg:w-2/3');
+            document.getElementById('checkout-right-panel').classList.add('lg:w-full');
+            
+            // 2. Create Order Object
+            const orderId = Math.floor(Math.random() * 1000000);
+            const today = new Date();
+            const delivery = new Date();
+            delivery.setDate(today.getDate() + 5); // 5 days delivery
+            
+            const newOrder = {
+                id: orderId,
+                items: [...cart],
+                date: today.toLocaleDateString(),
+                deliveryDate: delivery.toDateString(),
+                status: 'Processing',
+                timestamp: today.getTime(), // Save exact time for 12h logic
+                userName: document.getElementById('c-name').value,
+                userEmail: user ? user.email : 'guest@botanica.com',
+                userPhone: document.getElementById('c-phone').value
+            };
+
+            // 3. Save to Global Orders
+            allOrders.unshift(newOrder); 
+            localStorage.setItem('botanica_orders', JSON.stringify(allOrders));
+
+            // 4. Update Profile if anonymous user became semi-logged in via checkout inputs
+            if (!user) {
+                user = {
+                    name: document.getElementById('c-name').value,
+                    phone: document.getElementById('c-phone').value,
+                    address: document.getElementById('c-address').value,
+                    email: '' 
+                };
+                localStorage.setItem('botanica_user', JSON.stringify(user));
+                updateAuthUI();
+            }
+
+            // 5. Clear Cart
+            cart = [];
+            updateBasketCount();
+            updateBasketUI();
+        }
+
+    </script>
+</body>
+</html>
